@@ -1,12 +1,5 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import { Todo } from '../../types/todo';
-
-// Type untuk input todo baru
-export interface CreateTodoRequest {
-  title: string;
-  userId: number;
-  completed?: boolean;
-}
+import { Todo, CreateTodoRequest, PaginationParams, PaginatedTodosResponse } from '../../types/todo';
 
 export const todosApi = createApi({
   reducerPath: 'todosApi',
@@ -15,7 +8,30 @@ export const todosApi = createApi({
   }),
   tagTypes: ['Todo'],
   endpoints: (builder) => ({
-    getTodos: builder.query<Todo[], void>({
+    getTodos: builder.query<PaginatedTodosResponse, PaginationParams>({
+      query: ({ page, limit }) => {
+        const start = (page - 1) * limit;
+        return `todos?_start=${start}&_limit=${limit}`;
+      },
+      transformResponse: (response: Todo[], meta, arg) => {
+        // JSONPlaceholder memiliki 200 todos total
+        const total = 200;
+        const totalPages = Math.ceil(total / arg.limit);
+        
+        return {
+          todos: response,
+          total,
+          page: arg.page,
+          limit: arg.limit,
+          totalPages,
+        };
+      },
+      providesTags: (result, error, arg) => [
+        { type: 'Todo', id: `page-${arg.page}` },
+        'Todo',
+      ],
+    }),
+    getAllTodos: builder.query<Todo[], void>({
       query: () => 'todos',
       providesTags: ['Todo'],
     }),
@@ -37,4 +53,4 @@ export const todosApi = createApi({
   }),
 });
 
-export const { useGetTodosQuery, useCreateTodoMutation } = todosApi;
+export const { useGetTodosQuery, useGetAllTodosQuery, useCreateTodoMutation } = todosApi;

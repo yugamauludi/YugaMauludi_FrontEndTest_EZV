@@ -1,24 +1,25 @@
 'use client';
-
 import { useState } from 'react';
 import { useCreateTodoMutation } from '../store/api/todosApi';
 
 interface TodoFormProps {
   onSuccess?: () => void;
+  onCancel?: () => void;
+  isModal?: boolean;
 }
 
-export default function TodoForm({ onSuccess }: TodoFormProps) {
+export default function TodoForm({ onSuccess, onCancel, isModal = false }: TodoFormProps) {
   const [title, setTitle] = useState('');
   const [userId, setUserId] = useState(1);
-  const [isCompleted, setIsCompleted] = useState(false);
-  const [isFormVisible, setIsFormVisible] = useState(false);
+  const [completed, setCompleted] = useState(false);
   
-  const [createTodo, { isLoading, error, isSuccess }] = useCreateTodoMutation();
+  const [createTodo, { isLoading, error }] = useCreateTodoMutation();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (!title.trim()) {
+      alert('Please enter a todo title');
       return;
     }
 
@@ -26,14 +27,13 @@ export default function TodoForm({ onSuccess }: TodoFormProps) {
       await createTodo({
         title: title.trim(),
         userId,
-        completed: isCompleted,
+        completed,
       }).unwrap();
       
       // Reset form
       setTitle('');
       setUserId(1);
-      setIsCompleted(false);
-      setIsFormVisible(false);
+      setCompleted(false);
       
       if (onSuccess) {
         onSuccess();
@@ -43,163 +43,94 @@ export default function TodoForm({ onSuccess }: TodoFormProps) {
     }
   };
 
-  const handleCancel = () => {
-    setTitle('');
-    setUserId(1);
-    setIsCompleted(false);
-    setIsFormVisible(false);
-  };
-
-  if (!isFormVisible) {
-    return (
-      <div className="mb-8">
-        <button
-          onClick={() => setIsFormVisible(true)}
-          className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 group"
-        >
-          <svg className="w-5 h-5 mr-2 group-hover:rotate-90 transition-transform duration-300" fill="currentColor" viewBox="0 0 20 20">
-            <path fillRule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clipRule="evenodd" />
-          </svg>
-          Add New Todo
-        </button>
-      </div>
-    );
-  }
-
   return (
-    <div className="mb-8">
-      <div className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
-        {/* Header */}
-        <div className="bg-gradient-to-r from-blue-600 to-purple-600 px-6 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center">
-              <div className="w-8 h-8 bg-white/20 rounded-lg flex items-center justify-center mr-3">
-                <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clipRule="evenodd" />
-                </svg>
-              </div>
-              <h3 className="text-xl font-bold text-white">Create New Todo</h3>
-            </div>
-            <button
-              onClick={handleCancel}
-              className="text-white/80 hover:text-white transition-colors p-1"
-            >
-              <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
-                <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
-              </svg>
-            </button>
-          </div>
-        </div>
-
-        {/* Form */}
-        <form onSubmit={handleSubmit} className="p-6 space-y-6">
-          {/* Title Input */}
-          <div>
-            <label htmlFor="title" className="block text-sm font-semibold text-gray-700 mb-2">
-              Todo Title *
-            </label>
-            <input
-              type="text"
-              id="title"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              placeholder="Enter your todo task..."
-              className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 text-gray-900 placeholder-gray-500"
-              required
-              disabled={isLoading}
-            />
-          </div>
-
-          {/* User ID Input */}
-          <div>
-            <label htmlFor="userId" className="block text-sm font-semibold text-gray-700 mb-2">
-              User ID
-            </label>
-            <select
-              id="userId"
-              value={userId}
-              onChange={(e) => setUserId(Number(e.target.value))}
-              className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 text-gray-900"
-              disabled={isLoading}
-            >
-              {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(id => (
-                <option key={id} value={id}>User {id}</option>
-              ))}
-            </select>
-          </div>
-
-          {/* Completed Checkbox */}
-          <div className="flex items-center">
-            <input
-              type="checkbox"
-              id="completed"
-              checked={isCompleted}
-              onChange={(e) => setIsCompleted(e.target.checked)}
-              className="w-5 h-5 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2 mr-3"
-              disabled={isLoading}
-            />
-            <label htmlFor="completed" className="text-sm font-medium text-gray-700">
-              Mark as completed
-            </label>
-          </div>
-
-          {/* Error Message */}
-          {error && (
-            <div className="bg-red-50 border border-red-200 rounded-xl p-4">
-              <div className="flex items-center">
-                <svg className="w-5 h-5 text-red-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
-                </svg>
-                <p className="text-sm text-red-700">Failed to create todo. Please try again.</p>
-              </div>
-            </div>
-          )}
-
-          {/* Success Message */}
-          {isSuccess && (
-            <div className="bg-green-50 border border-green-200 rounded-xl p-4">
-              <div className="flex items-center">
-                <svg className="w-5 h-5 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                </svg>
-                <p className="text-sm text-green-700">Todo created successfully!</p>
-              </div>
-            </div>
-          )}
-
-          {/* Action Buttons */}
-          <div className="flex gap-4 pt-4">
-            <button
-              type="submit"
-              disabled={isLoading || !title.trim()}
-              className="flex-1 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold py-3 px-6 rounded-xl hover:shadow-lg transform hover:scale-105 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none"
-            >
-              {isLoading ? (
-                <div className="flex items-center justify-center">
-                  <div className="animate-spin rounded-full h-5 w-5 border-2 border-white border-t-transparent mr-2"></div>
-                  Creating...
-                </div>
-              ) : (
-                <div className="flex items-center justify-center">
-                  <svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                  </svg>
-                  Create Todo
-                </div>
-              )}
-            </button>
-            
-            <button
-              type="button"
-              onClick={handleCancel}
-              disabled={isLoading}
-              className="px-6 py-3 border border-gray-300 text-gray-700 font-semibold rounded-xl hover:bg-gray-50 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              Cancel
-            </button>
-          </div>
-        </form>
+    <form onSubmit={handleSubmit} className="space-y-6">
+      {/* Title Input */}
+      <div>
+        <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-2">
+          Todo Title
+        </label>
+        <input
+          type="text"
+          id="title"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+          placeholder="Enter your todo..."
+          required
+        />
       </div>
-    </div>
+
+      {/* User ID Select */}
+      <div>
+        <label htmlFor="userId" className="block text-sm font-medium text-gray-700 mb-2">
+          User ID
+        </label>
+        <select
+          id="userId"
+          value={userId}
+          onChange={(e) => setUserId(Number(e.target.value))}
+          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+        >
+          {Array.from({ length: 10 }, (_, i) => i + 1).map((id) => (
+            <option key={id} value={id}>
+              User {id}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      {/* Completed Checkbox */}
+      <div className="flex items-center">
+        <input
+          type="checkbox"
+          id="completed"
+          checked={completed}
+          onChange={(e) => setCompleted(e.target.checked)}
+          className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+        />
+        <label htmlFor="completed" className="ml-2 block text-sm text-gray-700">
+          Mark as completed
+        </label>
+      </div>
+
+      {/* Error Message */}
+      {error && (
+        <div className="text-red-600 text-sm bg-red-50 p-3 rounded-lg">
+          Failed to create todo. Please try again.
+        </div>
+      )}
+
+      {/* Buttons */}
+      <div className="flex gap-3 pt-4">
+        <button
+          type="submit"
+          disabled={isLoading}
+          className="flex-1 bg-gradient-to-r from-blue-500 to-purple-600 text-white py-3 px-6 rounded-lg hover:from-blue-600 hover:to-purple-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed font-medium"
+        >
+          {isLoading ? (
+            <span className="flex items-center justify-center">
+              <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              </svg>
+              Creating...
+            </span>
+          ) : (
+            'Create Todo'
+          )}
+        </button>
+        
+        {isModal && onCancel && (
+          <button
+            type="button"
+            onClick={onCancel}
+            className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-all font-medium"
+          >
+            Cancel
+          </button>
+        )}
+      </div>
+    </form>
   );
 }
