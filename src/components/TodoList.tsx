@@ -3,7 +3,7 @@ import { Todo } from '../types/todo';
 import AddTodoButton from './AddTodoButton';
 import Pagination from './Pagination';
 
-interface ISRTodoListProps {
+interface TodoListProps {
   page?: number;
   limit?: number;
 }
@@ -59,7 +59,7 @@ function TodoItem({ todo }: { todo: Todo }) {
   );
 }
 
-export default async function ISRTodoList({ page = 1, limit = 10 }: ISRTodoListProps) {
+export default async function TodoList({ page = 1, limit = 10 }: TodoListProps) {
   try {
     const data = await fetchTodos(page, limit);
     
@@ -68,11 +68,8 @@ export default async function ISRTodoList({ page = 1, limit = 10 }: ISRTodoListP
         {/* Header */}
         <div className="mb-8">
           <h1 className="text-4xl font-bold text-center mb-2 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-            ✨ Todo List App (ISR)
+            ✨ Todo List App
           </h1>
-          <p className="text-center text-gray-600 mb-6">
-            Incremental Static Regeneration with Next.js App Router
-          </p>
         </div>
 
         {/* Statistics Cards */}
@@ -126,12 +123,10 @@ export default async function ISRTodoList({ page = 1, limit = 10 }: ISRTodoListP
         <Pagination
           currentPage={data.page}
           totalPages={data.totalPages}
-          onPageChange={(newPage) => {
-            window.location.href = `/?page=${newPage}`;
-          }}
         />
       </div>
     );
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   } catch (error) {
     return (
       <div className="max-w-6xl mx-auto p-6">

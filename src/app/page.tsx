@@ -1,6 +1,6 @@
 import { Suspense } from 'react';
 import { Metadata } from 'next';
-import ISRTodoList from '../components/ISRTodoList';
+import TodoList from '../components/TodoList';
 
 interface PageProps {
   searchParams: {
@@ -46,7 +46,7 @@ export default function Home({ searchParams }: PageProps) {
   return (
     <main className="min-h-screen bg-gray-50">
       <Suspense fallback={<LoadingFallback />}>
-        <ISRTodoList page={page} limit={limit} />
+        <TodoList page={page} limit={limit} />
       </Suspense>
     </main>
   );

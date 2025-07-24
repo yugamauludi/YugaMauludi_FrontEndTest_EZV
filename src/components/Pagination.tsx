@@ -1,12 +1,22 @@
 'use client';
 
+import { useRouter, useSearchParams } from 'next/navigation';
+
 interface PaginationProps {
   currentPage: number;
   totalPages: number;
-  onPageChange: (page: number) => void;
 }
 
-export default function Pagination({ currentPage, totalPages, onPageChange }: PaginationProps) {
+export default function Pagination({ currentPage, totalPages }: PaginationProps) {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
+  const handlePageChange = (page: number) => {
+    const params = new URLSearchParams(searchParams.toString());
+    params.set('page', page.toString());
+    router.push(`/?${params.toString()}`);
+  };
+
   const getVisiblePages = () => {
     const delta = 2;
     const range = [];
@@ -37,7 +47,7 @@ export default function Pagination({ currentPage, totalPages, onPageChange }: Pa
     <div className="flex items-center justify-center space-x-2 mt-8">
       {/* Previous Button */}
       <button
-        onClick={() => onPageChange(currentPage - 1)}
+        onClick={() => handlePageChange(currentPage - 1)}
         disabled={currentPage === 1}
         className="px-3 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 hover:text-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
       >
@@ -48,7 +58,7 @@ export default function Pagination({ currentPage, totalPages, onPageChange }: Pa
       {getVisiblePages().map((page, index) => (
         <button
           key={index}
-          onClick={() => typeof page === 'number' && onPageChange(page)}
+          onClick={() => typeof page === 'number' && handlePageChange(page)}
           disabled={typeof page !== 'number'}
           className={`px-3 py-2 text-sm font-medium rounded-lg transition-all ${
             page === currentPage
@@ -64,7 +74,7 @@ export default function Pagination({ currentPage, totalPages, onPageChange }: Pa
 
       {/* Next Button */}
       <button
-        onClick={() => onPageChange(currentPage + 1)}
+        onClick={() => handlePageChange(currentPage + 1)}
         disabled={currentPage === totalPages}
         className="px-3 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 hover:text-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
       >
