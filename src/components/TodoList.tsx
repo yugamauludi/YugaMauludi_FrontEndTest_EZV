@@ -218,11 +218,6 @@ export default function TodoList() {
             ))}
           </div>
         </div>
-
-        {/* Footer */}
-        <div className="text-center mt-12 text-gray-500">
-          <p>Built with ❤️ using Next.js, Redux Toolkit & Tailwind CSS</p>
-        </div>
       </div>
     </div>
   );
