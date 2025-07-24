@@ -1,10 +1,37 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Todo List App - Next.js with ISR & Redux Toolkit
 
-## Getting Started
+Sebuah aplikasi todo list modern yang dibangun dengan Next.js, menggunakan Incremental Static Regeneration (ISR) dan Redux Toolkit untuk state management.
 
-First, run the development server:
+## 🚀 Fitur Utama
 
+- ✅ **Server-Side Rendering (SSR)** dengan Next.js App Router
+- 🔄 **Incremental Static Regeneration (ISR)** dengan revalidasi 60 detik
+- 🗂️ **State Management** menggunakan Redux Toolkit & RTK Query
+- 📄 **Pagination** dengan URL-based navigation
+- 📱 **Responsive Design** dengan Tailwind CSS
+- ➕ **Add Todo Feature** dengan modal form
+- 🎨 **Modern UI** dengan gradient design dan animasi
+
+## 🛠️ Teknologi yang Digunakan
+
+- **Framework**: Next.js 14 (App Router)
+- **Language**: TypeScript
+- **Styling**: Tailwind CSS
+- **State Management**: Redux Toolkit + RTK Query
+- **API**: JSONPlaceholder (https://jsonplaceholder.typicode.com/todos)
+- **Deployment**: Vercel (opsional)
+
+## 📋 Persyaratan Sistem
+
+- Node.js 18.0 atau lebih baru
+- npm atau yarn
+
+## 🚀 Cara Menjalankan Project
+
+### 1. Clone Repository
 ```bash
+git clone https://github.com/username/YugaMauludi_FrontEndTest_EZV.git
+cd YugaMauludi_FrontEndTest_EZV
 npm run dev
 # or
 yarn dev
