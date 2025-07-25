@@ -14,7 +14,6 @@ export const todosApi = createApi({
         return `todos?_start=${start}&_limit=${limit}`;
       },
       transformResponse: (response: Todo[], meta, arg) => {
-        // JSONPlaceholder memiliki 200 todos total
         const total = 200;
         const totalPages = Math.ceil(total / arg.limit);
         

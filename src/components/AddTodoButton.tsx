@@ -8,7 +8,6 @@ export default function AddTodoButton() {
 
   const handleSuccess = () => {
     setIsModalOpen(false);
-    // Refresh the page to show updated data
     window.location.reload();
   };
 

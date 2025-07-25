@@ -15,7 +15,7 @@ export async function fetchTodos(page: number = 1, limit: number = 10): Promise<
     const response = await fetch(
       `https://jsonplaceholder.typicode.com/todos?_start=${start}&_limit=${limit}`,
       {
-        next: { revalidate: 60 }, // ISR revalidation
+        next: { revalidate: 60 },
       }
     );
     
@@ -24,7 +24,7 @@ export async function fetchTodos(page: number = 1, limit: number = 10): Promise<
     }
     
     const todos: Todo[] = await response.json();
-    const total = 200; // JSONPlaceholder has 200 todos
+    const total = 200;
     const totalPages = Math.ceil(total / limit);
     
     return {

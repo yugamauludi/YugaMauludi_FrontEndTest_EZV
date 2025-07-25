@@ -1,10 +1,8 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   experimental: {
-    // Enable ISR
-    isrMemoryCacheSize: 0, // Disable default in-memory caching
+    isrMemoryCacheSize: 0,
   },
-  // Enable static exports untuk ISR
   output: 'standalone',
 };
 

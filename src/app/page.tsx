@@ -14,12 +14,9 @@ export const metadata: Metadata = {
   description: 'Todo list with Incremental Static Regeneration and Server-Side Rendering',
 };
 
-// ISR Configuration - Revalidate every 60 seconds
 export const revalidate = 60;
 
-// Generate static params for common pages
 export async function generateStaticParams() {
-  // Pre-generate first 5 pages
   return Array.from({ length: 5 }, (_, i) => ({
     page: (i + 1).toString(),
   }));

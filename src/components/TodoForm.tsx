@@ -30,7 +30,6 @@ export default function TodoForm({ onSuccess, onCancel, isModal = false }: TodoF
         completed,
       }).unwrap();
       
-      // Reset form
       setTitle('');
       setUserId(1);
       setCompleted(false);
